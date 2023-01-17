@@ -29,6 +29,6 @@ jobs:
 
       - name: Check codestyle
         run: |
-          npm ci
+          npm run ci-all
           npx eslint .
           npx prettier --check backend

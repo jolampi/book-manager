@@ -4,6 +4,7 @@
   "description": "Simple SPA for managing books.",
   "main": "index.js",
   "scripts": {
+    "ci-all": "npm ci && cd frontend && npm ci",
     "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -27,9 +27,8 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
 
-      - name: npm ci
+      - name: Run tests
         run: |
           cd frontend
           npm ci
-      - name: Run tests
-        run: npm test
+          npm test

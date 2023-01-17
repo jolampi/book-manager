@@ -1,9 +1,9 @@
-name: Frontend tests
+name: Codestyle
 
 on: [push]
 
 jobs:
-  frontend-tests:
+  codestyle:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,8 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Run tests
+      - name: Check codestyle
         run: |
-          cd frontend
           npm ci
-          npm test
+          npx eslint .
+          npx prettier --check backend

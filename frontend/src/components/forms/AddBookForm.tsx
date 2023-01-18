@@ -1,3 +1,5 @@
+import { css } from "@emotion/css"
+import styled from "@emotion/styled"
 import React, { FormEventHandler } from "react"
 
 import useTextInput from "../../hooks/useTextInput"
@@ -8,6 +10,16 @@ const AUTHOR = "Author"
 const DESCRIPTION = "Description"
 const SAVE_NEW = "Save New"
 const TITLE = "Title"
+
+const flexOne = css`
+  flex: 1;
+`
+
+const StyledFormRow = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`
 
 export interface AddBookFormProps {
   onSubmit: (data: NewBook) => Promise<void>
@@ -31,20 +43,35 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ onSubmit }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className={css`
+        row-gap: 1rem;
+        display: flex;
+        flex-direction: column;
+      `}
+    >
+      <StyledFormRow>
+        <label className={flexOne} htmlFor={titleInput.id}>
+          {TITLE}
+        </label>
+        <input className={flexOne} {...titleInput} required />
+      </StyledFormRow>
+      <StyledFormRow>
+        <label className={flexOne} htmlFor={authorInput.id}>
+          {AUTHOR}
+        </label>
+        <input className={flexOne} {...authorInput} required />
+      </StyledFormRow>
+      <StyledFormRow>
+        <label className={flexOne} htmlFor={descriptionInput.id}>
+          {DESCRIPTION}
+        </label>
+        <input className={flexOne} {...descriptionInput} />
+      </StyledFormRow>
       <div>
-        <label htmlFor={titleInput.id}>{TITLE}</label>
-        <input {...titleInput} required />
+        <input type="submit" value={SAVE_NEW} />
       </div>
-      <div>
-        <label htmlFor={authorInput.id}>{AUTHOR}</label>
-        <input {...authorInput} required />
-      </div>
-      <div>
-        <label htmlFor={descriptionInput.id}>{DESCRIPTION}</label>
-        <input {...descriptionInput} />
-      </div>
-      <input type="submit" value={SAVE_NEW} />
     </form>
   )
 }

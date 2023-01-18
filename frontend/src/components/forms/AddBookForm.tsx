@@ -2,6 +2,7 @@ import { css } from "@emotion/css"
 import styled from "@emotion/styled"
 import React, { FormEventHandler } from "react"
 
+import useTextArea from "../../hooks/useTextArea"
 import useTextInput from "../../hooks/useTextInput"
 import { NewBook } from "../../services/backend.types"
 
@@ -28,7 +29,7 @@ export interface AddBookFormProps {
 const AddBookForm: React.FC<AddBookFormProps> = ({ onSubmit }) => {
   const [authorInput, setAuthorValue] = useTextInput("")
   const [titleInput, setTitleValue] = useTextInput("")
-  const [descriptionInput, setDescriptionValue] = useTextInput("")
+  const [descriptionInput, setDescriptionValue] = useTextArea("")
 
   const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault()
@@ -67,7 +68,14 @@ const AddBookForm: React.FC<AddBookFormProps> = ({ onSubmit }) => {
         <label className={flexOne} htmlFor={descriptionInput.id}>
           {DESCRIPTION}
         </label>
-        <input className={flexOne} {...descriptionInput} />
+        <textarea
+          className={css`
+            resize: vertical;
+            width: auto;
+          `}
+          {...descriptionInput}
+          rows={7}
+        />
       </StyledFormRow>
       <div>
         <input type="submit" value={SAVE_NEW} />

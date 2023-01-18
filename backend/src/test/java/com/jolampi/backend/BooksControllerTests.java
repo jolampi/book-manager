@@ -21,16 +21,11 @@ public class BooksControllerTests {
   private static final String urlTemplate = "http://localhost:%s/books";
 
   @Test
-  public void greetingShouldReturnDefaultMessage() throws Exception {
+  public void canAddAndGetBook() throws Exception {
     String url = String.format(urlTemplate, port);
     NewBook newBook = new NewBook("Game Programming Patterns", "Robert Nystrom", "");
     this.restTemplate.postForObject(url, newBook, String.class);
     assertThat(this.restTemplate.getForObject(url, String.class))
       .contains("Game Programming Patterns");
-  }
-
-  @Test
-  void canAddAndGetBook() {
-    //
   }
 }

@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import React from "react"
 
-import { Book } from "../../services/backend.types"
+import { Book } from "../services/backend.types"
 
 const MINIMUM_SIZE = 10
 

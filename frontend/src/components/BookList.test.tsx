@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import React from "react"
 
-import { Book } from "../../services/backend.types"
+import { Book } from "../services/backend.types"
 
 import BookList from "./BookList"
 

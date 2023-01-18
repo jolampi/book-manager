@@ -1,0 +1,46 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "Root"
+		},
+		{
+			"path": "backend",
+			"name": "Backend"
+		},
+		{
+			"path": "frontend",
+			"name": "Frontend"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"editor.tabSize": 2,
+		"editor.formatOnSave": true,
+		"editor.formatOnSaveMode": "file",
+		"eslint.lintTask.enable": true,
+		"eslint.format.enable": true,
+		"[java]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[javascript]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"[javascriptreact]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"[typescript]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"[typescriptreact]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"java.compile.nullAnalysis.mode": "automatic"
+	},
+	"extensions": {
+		"recommendations": [
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode"
+		]
+	}
+}

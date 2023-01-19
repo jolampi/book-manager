@@ -1,4 +1,4 @@
-import { ChangeEventHandler, Dispatch, useId, useState } from "react"
+import { ChangeEventHandler, Dispatch, SetStateAction, useId, useState } from "react"
 
 export interface TextAreaProps {
   id: string
@@ -6,7 +6,7 @@ export interface TextAreaProps {
   value: string
 }
 
-export type UseTextInputHook = [TextAreaProps, Dispatch<string>]
+export type UseTextInputHook = [TextAreaProps, Dispatch<SetStateAction<string>>]
 
 export default function useTextInput(initialState: string): UseTextInputHook {
   const id = useId()

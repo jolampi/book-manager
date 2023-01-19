@@ -19,6 +19,7 @@ public class BooksControllerTests {
   private TestRestTemplate restTemplate;
 
   private static final String urlTemplate = "http://localhost:%s/books";
+  private static final String urlTemplateWithId = "http://localhost:%s/books/%d";
 
   @Test
   public void canAddAndGetBook() throws Exception {
@@ -27,5 +28,23 @@ public class BooksControllerTests {
     this.restTemplate.postForObject(url, newBook, String.class);
     assertThat(this.restTemplate.getForObject(url, String.class))
       .contains("Game Programming Patterns");
+  }
+
+  @Test
+  public void canEditBook() throws Exception {
+    String url = String.format(urlTemplate, port);
+    NewBook newBook = new NewBook("Game Programming Patterns", "Robert Nystrom", "");
+    this.restTemplate.postForObject(url, newBook, String.class);
+
+    // Id is guessed here, in proper use it should be resolved.
+    String urlWithId = String.format(urlTemplateWithId, port, 1);
+    NewBook editedBook = new NewBook(
+      "Game Programming Patterns",
+      "Robert Nystrom",
+      "Book that collects proven patterns to untangle and optimize your game."
+    );
+    this.restTemplate.put(urlWithId, editedBook, String.class);
+    assertThat(this.restTemplate.getForObject(url, String.class))
+      .contains("Book that collects proven patterns to untangle and optimize your game.");
   }
 }

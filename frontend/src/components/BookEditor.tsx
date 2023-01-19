@@ -8,6 +8,7 @@ import { Book, NewBook } from "../services/backend.types"
 
 // Localizations
 const AUTHOR = "Author"
+const CANCEL = "Cancel"
 const DESCRIPTION = "Description"
 const SAVE_NEW = "Save New"
 const TITLE = "Title"
@@ -22,14 +23,18 @@ const StyledFormRow = styled.div`
   flex-direction: column;
 `
 
+type EditMode = "create" | "edit"
+
 export interface BookEditorProps {
   /** Book to edit. Null means editing a new one instead. */
   book: Book | null
+  /** Callback for when usel cancel an edit operation. */
+  onCancel: () => void
   /** Callback for when user clicks to save a new book. */
   onSaveNew: (newBook: NewBook) => Promise<void>
 }
 
-const BookEditor: React.FC<BookEditorProps> = ({ book, onSaveNew }) => {
+const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSaveNew }) => {
   const [authorInput, setAuthorValue] = useTextInput("")
   const [canSubmit, setCanSubmit] = useState(true)
   const [descriptionArea, setDescriptionValue] = useTextArea("")
@@ -48,13 +53,18 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onSaveNew }) => {
         author: authorInput.value,
         description: descriptionArea.value,
         title: titleInput.value,
-      }).finally(() => setCanSubmit(false))
+      })
+      setAuthorValue("")
+      setDescriptionValue("")
+      setTitleValue("")
     } catch (e) {
       // Handle error
     } finally {
       setCanSubmit(true)
     }
   }
+
+  const editMode: EditMode = book === null ? "create" : "edit"
 
   return (
     <div
@@ -90,9 +100,10 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onSaveNew }) => {
         />
       </StyledFormRow>
       <div>
-        <button disabled={!canSubmit} onClick={handleCreate}>
+        <button disabled={!canSubmit || editMode === "edit"} onClick={handleCreate}>
           {SAVE_NEW}
         </button>
+        <button onClick={onCancel}>{CANCEL}</button>
       </div>
     </div>
   )

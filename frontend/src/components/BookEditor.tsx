@@ -10,6 +10,7 @@ import { Book, NewBook } from "../services/backend.types"
 const AUTHOR = "Author"
 const CANCEL = "Cancel"
 const DESCRIPTION = "Description"
+const SAVE = "Save"
 const SAVE_NEW = "Save New"
 const TITLE = "Title"
 
@@ -28,13 +29,15 @@ type EditMode = "create" | "edit"
 export interface BookEditorProps {
   /** Book to edit. Null means editing a new one instead. */
   book: Book | null
-  /** Callback for when usel cancel an edit operation. */
+  /** Callback for when user cancels an edit operation. */
   onCancel: () => void
-  /** Callback for when user clicks to save a new book. */
+  /** Callback for when user saves changes to an existing book.  */
+  onSave: (editedBook: NewBook) => Promise<void>
+  /** Callback for when user saves a new book. */
   onSaveNew: (newBook: NewBook) => Promise<void>
 }
 
-const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSaveNew }) => {
+const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSave, onSaveNew }) => {
   const [authorInput, setAuthorValue] = useTextInput("")
   const [canSubmit, setCanSubmit] = useState(true)
   const [descriptionArea, setDescriptionValue] = useTextArea("")
@@ -46,14 +49,27 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSaveNew }) =>
     setTitleValue(book?.title ?? "")
   }, [book, setAuthorValue, setDescriptionValue, setTitleValue])
 
-  const handleCreate = async () => {
+  const getNewBook = (): NewBook => ({
+    author: authorInput.value,
+    description: descriptionArea.value,
+    title: titleInput.value,
+  })
+
+  const handleSave = async () => {
     setCanSubmit(false)
     try {
-      await onSaveNew({
-        author: authorInput.value,
-        description: descriptionArea.value,
-        title: titleInput.value,
-      })
+      await onSave(getNewBook())
+    } catch (e) {
+      // Handle error
+    } finally {
+      setCanSubmit(true)
+    }
+  }
+
+  const handleSaveNew = async () => {
+    setCanSubmit(false)
+    try {
+      await onSaveNew(getNewBook())
       setAuthorValue("")
       setDescriptionValue("")
       setTitleValue("")
@@ -100,8 +116,11 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSaveNew }) =>
         />
       </StyledFormRow>
       <div>
-        <button disabled={!canSubmit || editMode === "edit"} onClick={handleCreate}>
+        <button disabled={!canSubmit || editMode !== "create"} onClick={handleSaveNew}>
           {SAVE_NEW}
+        </button>
+        <button disabled={!canSubmit || editMode !== "edit"} onClick={handleSave}>
+          {SAVE}
         </button>
         <button onClick={onCancel}>{CANCEL}</button>
       </div>

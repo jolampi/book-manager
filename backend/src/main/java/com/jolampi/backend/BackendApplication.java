@@ -18,7 +18,10 @@ public class BackendApplication {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/books").allowedOrigins("http://localhost:3000");
+        registry
+          .addMapping("/**")
+          .allowedOrigins("http://localhost:3000")
+          .allowedMethods("DELETE", "GET", "POST", "PUT");
       }
     };
   }

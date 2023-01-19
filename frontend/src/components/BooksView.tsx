@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 import React, { useState } from "react"
 import { useQuery } from "react-query"
 
-import { getBooks, postBook } from "../services/backend"
+import { getBooks, postBook, updateBook } from "../services/backend"
 import { Book, NewBook } from "../services/backend.types"
 
 import BookEditor from "./BookEditor"
@@ -24,9 +24,16 @@ const BooksView: React.FC = () => {
   })
   const [bookToEdit, setBookToEdit] = useState<Book | null>(null)
 
-  const handleAdd = async (newBook: NewBook) => {
+  const handleSaveNew = async (newBook: NewBook) => {
     await postBook(newBook)
     await booksQuery.refetch()
+  }
+
+  const handleSave = async (editedBook: NewBook) => {
+    if (bookToEdit) {
+      await updateBook(bookToEdit.id, editedBook)
+      await booksQuery.refetch()
+    }
   }
 
   const handleSelect = (id: number) => {
@@ -48,7 +55,8 @@ const BooksView: React.FC = () => {
         <FlexDiv>
           <BookEditor
             book={bookToEdit}
-            onSaveNew={handleAdd}
+            onSave={handleSave}
+            onSaveNew={handleSaveNew}
             onCancel={() => setBookToEdit(null)}
           />
         </FlexDiv>

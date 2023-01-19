@@ -22,7 +22,7 @@ const exampleBook: Book = {
 
 it("lets user create a new book", async () => {
   const onCreate = jest.fn<Promise<void>, [NewBook]>(() => Promise.resolve())
-  render(<BookEditor book={null} onCancel={jest.fn()} onSaveNew={onCreate} />)
+  render(<BookEditor book={null} onCancel={jest.fn()} onSave={jest.fn()} onSaveNew={onCreate} />)
 
   userEvent.type(screen.getByLabelText("Author"), exampleNewBook.author)
   userEvent.type(screen.getByLabelText("Description"), exampleNewBook.description)
@@ -34,7 +34,28 @@ it("lets user create a new book", async () => {
   expect(onCreate.mock.lastCall[0]).toStrictEqual(exampleNewBook)
 })
 
+it("lets user edit existing book", async () => {
+  const onSave = jest.fn<Promise<void>, [NewBook]>(() => Promise.resolve())
+  render(
+    <BookEditor book={exampleBook} onCancel={jest.fn()} onSave={onSave} onSaveNew={jest.fn()} />
+  )
+
+  userEvent.clear(screen.getByLabelText("Description"))
+  userEvent.type(screen.getByLabelText("Description"), "Changed description.")
+  await act(async () => {
+    userEvent.click(screen.getByText("Save"))
+  })
+
+  expect(onSave.mock.lastCall[0]).toStrictEqual<NewBook>({
+    author: exampleBook.author,
+    description: "Changed description.",
+    title: exampleBook.title,
+  })
+})
+
 it("prevents saving new when editing", async () => {
-  render(<BookEditor book={exampleBook} onCancel={jest.fn()} onSaveNew={jest.fn()} />)
+  render(
+    <BookEditor book={exampleBook} onCancel={jest.fn()} onSave={jest.fn()} onSaveNew={jest.fn()} />
+  )
   expect(screen.getByText("Save New")).toBeDisabled()
 })

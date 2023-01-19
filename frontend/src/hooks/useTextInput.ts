@@ -1,4 +1,4 @@
-import { ChangeEventHandler, Dispatch, useId, useState } from "react"
+import { ChangeEventHandler, Dispatch, SetStateAction, useId, useState } from "react"
 
 export interface TextInput {
   id: string
@@ -7,7 +7,7 @@ export interface TextInput {
   value: string
 }
 
-export type UseTextInputHook = [TextInput, Dispatch<string>]
+export type UseTextInputHook = [TextInput, Dispatch<SetStateAction<string>>]
 
 export default function useTextInput(initialState: string): UseTextInputHook {
   const id = useId()

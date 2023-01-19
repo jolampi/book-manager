@@ -6,8 +6,8 @@ import { useQuery } from "react-query"
 import { getBooks, postBook } from "../services/backend"
 import { NewBook } from "../services/backend.types"
 
+import BookEditor from "./BookEditor"
 import BookList from "./BookList"
-import AddBookForm from "./forms/AddBookForm"
 
 // Localization
 const ERROR = "Error"
@@ -39,7 +39,7 @@ const BooksView: React.FC = () => {
         `}
       >
         <FlexDiv>
-          <AddBookForm onSubmit={handleAdd} />
+          <BookEditor book={null} onSaveNew={handleAdd} />
         </FlexDiv>
         <FlexDiv>
           <BookList books={booksQuery.data} />

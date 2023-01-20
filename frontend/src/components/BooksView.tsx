@@ -48,7 +48,9 @@ const BooksView: React.FC = () => {
     <div
       className={css`
         display: flex;
+        column-gap: 1.5rem;
         flex-direction: row;
+        margin: 2rem;
       `}
     >
       <FlexDiv>

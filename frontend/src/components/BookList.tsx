@@ -30,7 +30,13 @@ const BookList: React.FC<BookListProps> = ({ books, onSelect, selected }) => {
   return (
     <select
       className={css`
+        margin-top: 1.5rem;
+        max-height: 10rem;
         width: 100%;
+
+        @media screen and (min-width: 30rem) {
+          max-height: none;
+        }
       `}
       value={selected?.id ?? NEW}
       size={size}

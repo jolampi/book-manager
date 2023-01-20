@@ -14,14 +14,21 @@ const SAVE = "Save"
 const SAVE_NEW = "Save New"
 const TITLE = "Title"
 
-const flexOne = css`
-  flex: 1;
+const EditorElement = styled.div`
+  margin-bottom: 1rem;
 `
 
-const StyledFormRow = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+const StyledButton = styled.button`
+  margin-right: 0.5rem;
+`
+
+const StyledInput = styled.input`
+  width: 100%;
+`
+
+const StyledLabel = styled.label`
+  display: block;
+  margin-bottom: 0.3rem;
 `
 
 type EditMode = "create" | "edit"
@@ -75,57 +82,49 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
     })
   }
 
+  const canSeave = !!(authorInput.value && titleInput.value)
   const editMode: EditMode = book === null ? "create" : "edit"
 
   return (
-    <div
-      className={css`
-        row-gap: 1rem;
-        display: flex;
-        flex-direction: column;
-      `}
-    >
-      <StyledFormRow>
-        <label className={flexOne} htmlFor={titleInput.id}>
-          {TITLE}
-        </label>
-        <input className={flexOne} {...titleInput} />
-      </StyledFormRow>
-      <StyledFormRow>
-        <label className={flexOne} htmlFor={authorInput.id}>
-          {AUTHOR}
-        </label>
-        <input className={flexOne} {...authorInput} />
-      </StyledFormRow>
-      <StyledFormRow>
-        <label className={flexOne} htmlFor={descriptionArea.id}>
-          {DESCRIPTION}
-        </label>
+    <div>
+      <EditorElement>
+        <StyledLabel htmlFor={titleInput.id}>{TITLE}</StyledLabel>
+        <StyledInput {...titleInput} />
+      </EditorElement>
+      <EditorElement>
+        <StyledLabel htmlFor={authorInput.id}>{AUTHOR}</StyledLabel>
+        <StyledInput {...authorInput} />
+      </EditorElement>
+      <EditorElement>
+        <StyledLabel htmlFor={descriptionArea.id}>{DESCRIPTION}</StyledLabel>
         <textarea
           className={css`
             resize: vertical;
-            width: auto;
+            width: 100%;
           `}
           {...descriptionArea}
           rows={7}
         />
-      </StyledFormRow>
+      </EditorElement>
       <div>
-        <button disabled={!canSubmit || editMode !== "create"} onClick={handleSaveNew}>
+        <StyledButton
+          disabled={!canSubmit || !canSeave || editMode !== "create"}
+          onClick={handleSaveNew}
+        >
           {SAVE_NEW}
-        </button>
-        <button
-          disabled={!canSubmit || editMode !== "edit"}
+        </StyledButton>
+        <StyledButton
+          disabled={!canSubmit || !canSeave || editMode !== "edit"}
           onClick={() => preventSubmissionUntil(() => onSave(getNewBook()))}
         >
           {SAVE}
-        </button>
-        <button
+        </StyledButton>
+        <StyledButton
           disabled={!canSubmit || editMode !== "edit"}
           onClick={() => preventSubmissionUntil(onDelete)}
         >
           {DELETE}
-        </button>
+        </StyledButton>
       </div>
     </div>
   )

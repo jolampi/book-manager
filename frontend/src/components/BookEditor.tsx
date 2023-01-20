@@ -75,6 +75,7 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
     })
   }
 
+  const canSeave = !!(authorInput.value && titleInput.value)
   const editMode: EditMode = book === null ? "create" : "edit"
 
   return (
@@ -111,11 +112,11 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
         />
       </StyledFormRow>
       <div>
-        <button disabled={!canSubmit || editMode !== "create"} onClick={handleSaveNew}>
+        <button disabled={!canSubmit || !canSeave || editMode !== "create"} onClick={handleSaveNew}>
           {SAVE_NEW}
         </button>
         <button
-          disabled={!canSubmit || editMode !== "edit"}
+          disabled={!canSubmit || !canSeave || editMode !== "edit"}
           onClick={() => preventSubmissionUntil(() => onSave(getNewBook()))}
         >
           {SAVE}

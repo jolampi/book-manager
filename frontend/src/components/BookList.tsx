@@ -26,7 +26,7 @@ const BookList: React.FC<BookListProps> = ({ books, onSelect, selected }) => {
     }
   }
 
-  const size = Math.max(MINIMUM_SIZE, books.length)
+  const size = Math.max(MINIMUM_SIZE, books.length + 1)
   return (
     <select
       className={css`

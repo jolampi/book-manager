@@ -9,6 +9,7 @@ import { Book, NewBook } from "../services/backend.types"
 // Localizations
 const AUTHOR = "Author"
 const CANCEL = "Cancel"
+const DELETE = "Delete"
 const DESCRIPTION = "Description"
 const SAVE = "Save"
 const SAVE_NEW = "Save New"
@@ -31,13 +32,15 @@ export interface BookEditorProps {
   book: Book | null
   /** Callback for when user cancels an edit operation. */
   onCancel: () => void
+  /** Callback for when user deletes a book. */
+  onDelete: () => Promise<void>
   /** Callback for when user saves changes to an existing book.  */
   onSave: (editedBook: NewBook) => Promise<void>
   /** Callback for when user saves a new book. */
   onSaveNew: (newBook: NewBook) => Promise<void>
 }
 
-const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSave, onSaveNew }) => {
+const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onDelete, onSave, onSaveNew }) => {
   const [authorInput, setAuthorValue] = useTextInput("")
   const [canSubmit, setCanSubmit] = useState(true)
   const [descriptionArea, setDescriptionValue] = useTextArea("")
@@ -55,10 +58,10 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSave, onSaveN
     title: titleInput.value,
   })
 
-  const handleSave = async () => {
+  const preventSubmissionUntil = async (f: () => Promise<void>) => {
     setCanSubmit(false)
     try {
-      await onSave(getNewBook())
+      await f()
     } catch (e) {
       // Handle error
     } finally {
@@ -66,18 +69,13 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSave, onSaveN
     }
   }
 
-  const handleSaveNew = async () => {
-    setCanSubmit(false)
-    try {
+  const handleSaveNew = () => {
+    return preventSubmissionUntil(async () => {
       await onSaveNew(getNewBook())
       setAuthorValue("")
       setDescriptionValue("")
       setTitleValue("")
-    } catch (e) {
-      // Handle error
-    } finally {
-      setCanSubmit(true)
-    }
+    })
   }
 
   const editMode: EditMode = book === null ? "create" : "edit"
@@ -119,8 +117,17 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onSave, onSaveN
         <button disabled={!canSubmit || editMode !== "create"} onClick={handleSaveNew}>
           {SAVE_NEW}
         </button>
-        <button disabled={!canSubmit || editMode !== "edit"} onClick={handleSave}>
+        <button
+          disabled={!canSubmit || editMode !== "edit"}
+          onClick={() => preventSubmissionUntil(() => onSave(getNewBook()))}
+        >
           {SAVE}
+        </button>
+        <button
+          disabled={!canSubmit || editMode !== "edit"}
+          onClick={() => preventSubmissionUntil(onDelete)}
+        >
+          {DELETE}
         </button>
         <button onClick={onCancel}>{CANCEL}</button>
       </div>

@@ -13,6 +13,14 @@ export async function getBooks(): Promise<Array<Book>> {
 }
 
 /**
+ * Deletes the book in the backend.
+ */
+export async function deleteBook(id: number): Promise<void> {
+  const res = await axios.delete(`${BASE_URL}/books/${id}`)
+  return res.data
+}
+
+/**
  * Posts a new book to the backend.
  */
 export async function postBook(newBook: NewBook): Promise<void> {
@@ -21,7 +29,7 @@ export async function postBook(newBook: NewBook): Promise<void> {
 }
 
 /**
- * Puts updated book into the backend.
+ * Updates updated book in the backend.
  */
 export async function updateBook(id: number, updatedBook: NewBook): Promise<void> {
   const res = await axios.put(`${BASE_URL}/books/${id}`, updatedBook)

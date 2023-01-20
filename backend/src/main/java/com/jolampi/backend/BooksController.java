@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,18 @@ public class BooksController {
     for (Book book : this.books) {
       if (book.id() == id) {
         return book;
+      }
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+  }
+
+  @DeleteMapping("/books/{id}")
+  public void deleteBookById(@PathVariable long id) {
+    ListIterator<Book> iterator = this.books.listIterator();
+    while (iterator.hasNext()) {
+      if (iterator.next().id() == id) {
+        iterator.remove();
+        return;
       }
     }
     throw new ResponseStatusException(HttpStatus.NOT_FOUND);

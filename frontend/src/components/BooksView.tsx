@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 import React, { useState } from "react"
 import { useQuery } from "react-query"
 
-import { getBooks, postBook, updateBook } from "../services/backend"
+import { deleteBook, getBooks, postBook, updateBook } from "../services/backend"
 import { Book, NewBook } from "../services/backend.types"
 
 import BookEditor from "./BookEditor"
@@ -23,6 +23,14 @@ const BooksView: React.FC = () => {
     return books.sort((a, b) => a.title.localeCompare(b.title))
   })
   const [bookToEdit, setBookToEdit] = useState<Book | null>(null)
+
+  const handleDelete = async () => {
+    if (bookToEdit) {
+      await deleteBook(bookToEdit.id)
+      await booksQuery.refetch()
+      setBookToEdit(null)
+    }
+  }
 
   const handleSaveNew = async (newBook: NewBook) => {
     await postBook(newBook)
@@ -55,6 +63,7 @@ const BooksView: React.FC = () => {
         <FlexDiv>
           <BookEditor
             book={bookToEdit}
+            onDelete={handleDelete}
             onSave={handleSave}
             onSaveNew={handleSaveNew}
             onCancel={() => setBookToEdit(null)}

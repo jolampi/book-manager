@@ -44,12 +44,6 @@ const BooksView: React.FC = () => {
     }
   }
 
-  const handleSelect = (id: number) => {
-    if (booksQuery.isSuccess) {
-      setBookToEdit(booksQuery.data.find((x) => x.id === id) ?? null)
-    }
-  }
-
   if (booksQuery.isError) {
     return <div>{ERROR}</div>
   } else if (booksQuery.isSuccess) {
@@ -66,11 +60,10 @@ const BooksView: React.FC = () => {
             onDelete={handleDelete}
             onSave={handleSave}
             onSaveNew={handleSaveNew}
-            onCancel={() => setBookToEdit(null)}
           />
         </FlexDiv>
         <FlexDiv>
-          <BookList books={booksQuery.data} onSelect={handleSelect} />
+          <BookList books={booksQuery.data} onSelect={setBookToEdit} selected={bookToEdit} />
         </FlexDiv>
       </div>
     )

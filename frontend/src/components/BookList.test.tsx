@@ -12,7 +12,7 @@ test("renders book title and author", () => {
     id: 0,
     title: "Game Programming Patterns",
   }
-  render(<BookList books={[book]} onSelect={jest.fn()} />)
+  render(<BookList books={[book]} onSelect={jest.fn()} selected={null} />)
 
   const authorElement = screen.getByText(book.author, { exact: false })
   expect(authorElement).toBeInTheDocument()

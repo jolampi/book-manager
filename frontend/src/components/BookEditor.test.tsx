@@ -22,15 +22,7 @@ const exampleBook: Book = {
 
 it("lets user create a new book", async () => {
   const onCreate = jest.fn<Promise<void>, [NewBook]>(() => Promise.resolve())
-  render(
-    <BookEditor
-      book={null}
-      onCancel={jest.fn()}
-      onDelete={jest.fn()}
-      onSave={jest.fn()}
-      onSaveNew={onCreate}
-    />
-  )
+  render(<BookEditor book={null} onDelete={jest.fn()} onSave={jest.fn()} onSaveNew={onCreate} />)
 
   userEvent.type(screen.getByLabelText("Author"), exampleNewBook.author)
   userEvent.type(screen.getByLabelText("Description"), exampleNewBook.description)
@@ -45,13 +37,7 @@ it("lets user create a new book", async () => {
 it("lets user edit existing book", async () => {
   const onSave = jest.fn<Promise<void>, [NewBook]>(() => Promise.resolve())
   render(
-    <BookEditor
-      book={exampleBook}
-      onCancel={jest.fn()}
-      onDelete={jest.fn()}
-      onSave={onSave}
-      onSaveNew={jest.fn()}
-    />
+    <BookEditor book={exampleBook} onDelete={jest.fn()} onSave={onSave} onSaveNew={jest.fn()} />
   )
 
   userEvent.clear(screen.getByLabelText("Description"))
@@ -69,39 +55,17 @@ it("lets user edit existing book", async () => {
 
 it("prevents saving new when editing", async () => {
   render(
-    <BookEditor
-      book={exampleBook}
-      onCancel={jest.fn()}
-      onDelete={jest.fn()}
-      onSave={jest.fn()}
-      onSaveNew={jest.fn()}
-    />
+    <BookEditor book={exampleBook} onDelete={jest.fn()} onSave={jest.fn()} onSaveNew={jest.fn()} />
   )
   expect(screen.getByText("Save New")).toBeDisabled()
 })
 
 it("prevents saving when creating new", async () => {
-  render(
-    <BookEditor
-      book={null}
-      onCancel={jest.fn()}
-      onDelete={jest.fn()}
-      onSave={jest.fn()}
-      onSaveNew={jest.fn()}
-    />
-  )
+  render(<BookEditor book={null} onDelete={jest.fn()} onSave={jest.fn()} onSaveNew={jest.fn()} />)
   expect(screen.getByText("Save")).toBeDisabled()
 })
 
 it("prevents deleting when creating new", async () => {
-  render(
-    <BookEditor
-      book={null}
-      onCancel={jest.fn()}
-      onDelete={jest.fn()}
-      onSave={jest.fn()}
-      onSaveNew={jest.fn()}
-    />
-  )
+  render(<BookEditor book={null} onDelete={jest.fn()} onSave={jest.fn()} onSaveNew={jest.fn()} />)
   expect(screen.getByText("Save")).toBeDisabled()
 })

@@ -52,6 +52,7 @@ const BooksView: React.FC = () => {
         column-gap: 1.5rem;
         flex-direction: row;
         flex-wrap: wrap-reverse;
+        row-gap: 2rem;
       `}
     >
       <FlexDiv>

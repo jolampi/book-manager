@@ -19,6 +19,11 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           margin: 0.5rem 2rem 0.2rem;
           line-height: 1.2;
           padding: 0;
+          text-align: center;
+
+          @media screen and (min-width: 30rem) {
+            text-align: left;
+          }
         `}
       >
         {title}

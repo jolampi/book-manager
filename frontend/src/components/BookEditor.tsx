@@ -8,7 +8,6 @@ import { Book, NewBook } from "../services/backend.types"
 
 // Localizations
 const AUTHOR = "Author"
-const CANCEL = "Cancel"
 const DELETE = "Delete"
 const DESCRIPTION = "Description"
 const SAVE = "Save"
@@ -30,8 +29,6 @@ type EditMode = "create" | "edit"
 export interface BookEditorProps {
   /** Book to edit. Null means editing a new one instead. */
   book: Book | null
-  /** Callback for when user cancels an edit operation. */
-  onCancel: () => void
   /** Callback for when user deletes a book. */
   onDelete: () => Promise<void>
   /** Callback for when user saves changes to an existing book.  */
@@ -40,7 +37,7 @@ export interface BookEditorProps {
   onSaveNew: (newBook: NewBook) => Promise<void>
 }
 
-const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onDelete, onSave, onSaveNew }) => {
+const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveNew }) => {
   const [authorInput, setAuthorValue] = useTextInput("")
   const [canSubmit, setCanSubmit] = useState(true)
   const [descriptionArea, setDescriptionValue] = useTextArea("")
@@ -129,7 +126,6 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onCancel, onDelete, onSav
         >
           {DELETE}
         </button>
-        <button onClick={onCancel}>{CANCEL}</button>
       </div>
     </div>
   )

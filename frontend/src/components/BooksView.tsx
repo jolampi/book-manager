@@ -10,8 +10,8 @@ import BookEditor from "./BookEditor"
 import BookList from "./BookList"
 
 // Localization
-const ERROR = "Error"
-const LOADING = "Loading..."
+const LOADING_BOOKS = "Loading books..."
+const ERROR_FAILED_TO_LOAD_BOOKS = "Error: Failed to load books."
 
 const FlexDiv = styled.div`
   flex: 1;
@@ -44,32 +44,30 @@ const BooksView: React.FC = () => {
     }
   }
 
-  if (booksQuery.isError) {
-    return <div>{ERROR}</div>
-  } else if (booksQuery.isSuccess) {
-    return (
-      <div
-        className={css`
-          display: flex;
-          flex-direction: row;
-        `}
-      >
-        <FlexDiv>
-          <BookEditor
-            book={bookToEdit}
-            onDelete={handleDelete}
-            onSave={handleSave}
-            onSaveNew={handleSaveNew}
-          />
-        </FlexDiv>
-        <FlexDiv>
+  return (
+    <div
+      className={css`
+        display: flex;
+        flex-direction: row;
+      `}
+    >
+      <FlexDiv>
+        <BookEditor
+          book={bookToEdit}
+          onDelete={handleDelete}
+          onSave={handleSave}
+          onSaveNew={handleSaveNew}
+        />
+      </FlexDiv>
+      <FlexDiv>
+        {booksQuery.isError && <div>{ERROR_FAILED_TO_LOAD_BOOKS}</div>}
+        {booksQuery.isLoading && <div>{LOADING_BOOKS}</div>}
+        {booksQuery.isSuccess && (
           <BookList books={booksQuery.data} onSelect={setBookToEdit} selected={bookToEdit} />
-        </FlexDiv>
-      </div>
-    )
-  } else {
-    return <div>{LOADING}</div>
-  }
+        )}
+      </FlexDiv>
+    </div>
+  )
 }
 
 export default BooksView

@@ -30,6 +30,7 @@ const BookList: React.FC<BookListProps> = ({ books, onSelect, selected }) => {
   return (
     <select
       className={css`
+        margin-top: 1.5rem;
         width: 100%;
       `}
       value={selected?.id ?? NEW}

@@ -1,8 +1,6 @@
 package com.jolampi.backend;
 
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,61 +14,40 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class BooksController {
 
-  /** In-memory array of books. */
-  private final ArrayList<Book> books = new ArrayList<>();
-  /** Simple id generator to guarantee unique values. */
-  private final AtomicLong idGenerator = new AtomicLong();
+  @Autowired
+  private BookRepository bookRepository;
 
   @GetMapping("/books")
-  public ArrayList<Book> getBooks() {
-    return this.books;
+  public Iterable<Book> getBooks() {
+    return bookRepository.findAll();
   }
 
   @PostMapping("/books")
   public void postBook(@RequestBody NewBook newBook) {
-    this.books.add(
-        new Book(
-          this.idGenerator.incrementAndGet(),
-          newBook.title(),
-          newBook.author(),
-          newBook.description()
-        )
-      );
+    Book book = new Book(newBook.author(), newBook.description(), newBook.title());
+    bookRepository.save(book);
   }
 
   @GetMapping("/books/{id}")
   public Book getBookById(@PathVariable long id) {
-    for (Book book : this.books) {
-      if (book.id() == id) {
-        return book;
-      }
-    }
-    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    return bookRepository
+      .findById(id)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
   @DeleteMapping("/books/{id}")
   public void deleteBookById(@PathVariable long id) {
-    ListIterator<Book> iterator = this.books.listIterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().id() == id) {
-        iterator.remove();
-        return;
-      }
-    }
-    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    bookRepository.deleteById(id);
   }
 
   @PutMapping("/books/{id}")
   public void updateBook(@PathVariable long id, @RequestBody NewBook updatedBook) {
-    ListIterator<Book> iterator = this.books.listIterator();
-    while (iterator.hasNext()) {
-      if (iterator.next().id() == id) {
-        iterator.set(
-          new Book(id, updatedBook.title(), updatedBook.author(), updatedBook.description())
-        );
-        return;
-      }
-    }
-    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    Book book = bookRepository
+      .findById(id)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    book.setAuthor(updatedBook.author());
+    book.setDescription(updatedBook.description());
+    book.setTitle(updatedBook.title());
+    bookRepository.save(book);
   }
 }

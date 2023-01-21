@@ -27,7 +27,7 @@ public class BooksControllerTests {
   @Test
   public void canAddBook() throws Exception {
     Book book = postAndGetBook(new NewBook("Book to add", "Test", ""));
-    String url = String.format(urlTemplateWithId, port, book.id());
+    String url = String.format(urlTemplateWithId, port, book.getId());
     assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
       .isEqualTo(HttpStatus.OK);
   }
@@ -35,7 +35,7 @@ public class BooksControllerTests {
   @Test
   public void canDeleteBook() throws Exception {
     Book book = postAndGetBook(new NewBook("Book to delete", "Test", ""));
-    String url = String.format(urlTemplateWithId, port, book.id());
+    String url = String.format(urlTemplateWithId, port, book.getId());
     this.restTemplate.delete(url);
     assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
       .isEqualTo(HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ public class BooksControllerTests {
   public void canEditBook() throws Exception {
     NewBook initialBook = new NewBook("Book to edit", "Test", "");
     Book book = postAndGetBook(initialBook);
-    String url = String.format(urlTemplateWithId, port, book.id());
+    String url = String.format(urlTemplateWithId, port, book.getId());
     NewBook editedNewBook = new NewBook(
       initialBook.title(),
       initialBook.author(),
@@ -57,7 +57,7 @@ public class BooksControllerTests {
       fail();
       return;
     }
-    assertEquals(editedNewBook.description(), editedBook.description());
+    assertEquals(editedNewBook.description(), editedBook.getDescription());
   }
 
   /**
@@ -72,7 +72,7 @@ public class BooksControllerTests {
       throw new Exception();
     }
     for (Book book : books) {
-      if (book.author().equals(newBook.author()) && book.title().equals(newBook.title())) {
+      if (book.getAuthor().equals(newBook.author()) && book.getTitle().equals(newBook.title())) {
         return book;
       }
     }

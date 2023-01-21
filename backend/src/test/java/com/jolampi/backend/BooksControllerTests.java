@@ -1,6 +1,5 @@
 package com.jolampi.backend;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -11,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class BooksControllerTests {
 
@@ -26,26 +27,27 @@ public class BooksControllerTests {
 
   @Test
   public void canAddBook() throws Exception {
-    Book book = postAndGetBook(new NewBook("Book to add", "Test", ""));
-    String url = String.format(urlTemplateWithId, port, book.id());
-    assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
-      .isEqualTo(HttpStatus.OK);
+    Book book = postAndGetBook(new NewBook("Test", "", "Book to add"));
+    String url = String.format(urlTemplateWithId, port, book.getId());
+    assertEquals(HttpStatus.OK, this.restTemplate.getForEntity(url, Book.class).getStatusCode());
   }
 
   @Test
   public void canDeleteBook() throws Exception {
-    Book book = postAndGetBook(new NewBook("Book to delete", "Test", ""));
-    String url = String.format(urlTemplateWithId, port, book.id());
+    Book book = postAndGetBook(new NewBook("Test", "", "Book to delete"));
+    String url = String.format(urlTemplateWithId, port, book.getId());
     this.restTemplate.delete(url);
-    assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
-      .isEqualTo(HttpStatus.NOT_FOUND);
+    assertEquals(
+      HttpStatus.NOT_FOUND,
+      this.restTemplate.getForEntity(url, Book.class).getStatusCode()
+    );
   }
 
   @Test
   public void canEditBook() throws Exception {
-    NewBook initialBook = new NewBook("Book to edit", "Test", "");
+    NewBook initialBook = new NewBook("Test", "", "Book to edit");
     Book book = postAndGetBook(initialBook);
-    String url = String.format(urlTemplateWithId, port, book.id());
+    String url = String.format(urlTemplateWithId, port, book.getId());
     NewBook editedNewBook = new NewBook(
       initialBook.title(),
       initialBook.author(),
@@ -57,7 +59,7 @@ public class BooksControllerTests {
       fail();
       return;
     }
-    assertEquals(editedNewBook.description(), editedBook.description());
+    assertEquals(editedNewBook.description(), editedBook.getDescription());
   }
 
   /**
@@ -72,7 +74,7 @@ public class BooksControllerTests {
       throw new Exception();
     }
     for (Book book : books) {
-      if (book.author().equals(newBook.author()) && book.title().equals(newBook.title())) {
+      if (book.getAuthor().equals(newBook.author()) && book.getTitle().equals(newBook.title())) {
         return book;
       }
     }

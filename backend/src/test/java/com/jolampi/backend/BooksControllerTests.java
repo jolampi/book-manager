@@ -1,6 +1,5 @@
 package com.jolampi.backend;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,24 +25,25 @@ public class BooksControllerTests {
 
   @Test
   public void canAddBook() throws Exception {
-    Book book = postAndGetBook(new NewBook("Book to add", "Test", ""));
+    Book book = postAndGetBook(new NewBook("Test", "", "Book to add"));
     String url = String.format(urlTemplateWithId, port, book.getId());
-    assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
-      .isEqualTo(HttpStatus.OK);
+    assertEquals(HttpStatus.OK, this.restTemplate.getForEntity(url, Book.class).getStatusCode());
   }
 
   @Test
   public void canDeleteBook() throws Exception {
-    Book book = postAndGetBook(new NewBook("Book to delete", "Test", ""));
+    Book book = postAndGetBook(new NewBook("Test", "", "Book to delete"));
     String url = String.format(urlTemplateWithId, port, book.getId());
     this.restTemplate.delete(url);
-    assertThat(this.restTemplate.getForEntity(url, Book.class).getStatusCode())
-      .isEqualTo(HttpStatus.NOT_FOUND);
+    assertEquals(
+      HttpStatus.NOT_FOUND,
+      this.restTemplate.getForEntity(url, Book.class).getStatusCode()
+    );
   }
 
   @Test
   public void canEditBook() throws Exception {
-    NewBook initialBook = new NewBook("Book to edit", "Test", "");
+    NewBook initialBook = new NewBook("Test", "", "Book to edit");
     Book book = postAndGetBook(initialBook);
     String url = String.format(urlTemplateWithId, port, book.getId());
     NewBook editedNewBook = new NewBook(

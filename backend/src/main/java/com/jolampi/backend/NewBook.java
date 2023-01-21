@@ -1,3 +1,3 @@
 package com.jolampi.backend;
 
-public record NewBook(String title, String author, String description) {}
+public record NewBook(String author, String description, String title) {}

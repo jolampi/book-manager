@@ -15,7 +15,6 @@ const ERROR_FAILED_TO_LOAD_BOOKS = "Error: Failed to load books."
 
 const FlexDiv = styled.div`
   flex: 1;
-  min-width: 200px;
 `
 
 const BooksView: React.FC = () => {
@@ -50,9 +49,12 @@ const BooksView: React.FC = () => {
       className={css`
         display: flex;
         column-gap: 1.5rem;
-        flex-direction: row;
-        flex-wrap: wrap-reverse;
+        flex-direction: column-reverse;
         row-gap: 2rem;
+
+        @media screen and (min-width: 30rem) {
+          flex-direction: row;
+        }
       `}
     >
       <FlexDiv>

@@ -10,6 +10,8 @@ import { Book, NewBook } from "../services/backend.types"
 const AUTHOR = "Author"
 const DELETE = "Delete"
 const DESCRIPTION = "Description"
+const ERROR_WHEN_DELETING = "Error: Deleting failed."
+const ERROR_WHEN_SAVING = "Error: Saving failed."
 const SAVE = "Save"
 const SAVE_NEW = "Save New"
 const TITLE = "Title"
@@ -23,6 +25,7 @@ const StyledButton = styled.button`
 `
 
 const StyledInput = styled.input`
+  box-sizing: border-box;
   width: 100%;
 `
 
@@ -48,11 +51,13 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
   const [authorInput, setAuthorValue] = useTextInput("")
   const [canSubmit, setCanSubmit] = useState(true)
   const [descriptionArea, setDescriptionValue] = useTextArea("")
+  const [error, setError] = useState("")
   const [titleInput, setTitleValue] = useTextInput("")
 
   useEffect(() => {
     setAuthorValue(book?.author ?? "")
     setDescriptionValue(book?.description ?? "")
+    setError("")
     setTitleValue(book?.title ?? "")
   }, [book, setAuthorValue, setDescriptionValue, setTitleValue])
 
@@ -62,12 +67,13 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
     title: titleInput.value,
   })
 
-  const preventSubmissionUntil = async (f: () => Promise<void>) => {
+  const preventSubmissionUntil = async (f: () => Promise<void>, error: string) => {
     setCanSubmit(false)
     try {
       await f()
+      setError("")
     } catch (e) {
-      // Handle error
+      setError(error)
     } finally {
       setCanSubmit(true)
     }
@@ -79,7 +85,7 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
       setAuthorValue("")
       setDescriptionValue("")
       setTitleValue("")
-    })
+    }, ERROR_WHEN_SAVING)
   }
 
   const canSeave = !!(authorInput.value && titleInput.value)
@@ -99,6 +105,7 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
         <StyledLabel htmlFor={descriptionArea.id}>{DESCRIPTION}</StyledLabel>
         <textarea
           className={css`
+            box-sizing: border-box;
             resize: vertical;
             width: 100%;
           `}
@@ -115,17 +122,27 @@ const BookEditor: React.FC<BookEditorProps> = ({ book, onDelete, onSave, onSaveN
         </StyledButton>
         <StyledButton
           disabled={!canSubmit || !canSeave || editMode !== "edit"}
-          onClick={() => preventSubmissionUntil(() => onSave(getNewBook()))}
+          onClick={() => preventSubmissionUntil(() => onSave(getNewBook()), ERROR_WHEN_SAVING)}
         >
           {SAVE}
         </StyledButton>
         <StyledButton
           disabled={!canSubmit || editMode !== "edit"}
-          onClick={() => preventSubmissionUntil(onDelete)}
+          onClick={() => preventSubmissionUntil(onDelete, ERROR_WHEN_DELETING)}
         >
           {DELETE}
         </StyledButton>
       </div>
+      {error && (
+        <div
+          className={css`
+            color: #c60909;
+            margin-top: 0.5rem;
+          `}
+        >
+          {error}
+        </div>
+      )}
     </div>
   )
 }

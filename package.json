@@ -4,7 +4,7 @@
   "description": "Simple SPA for managing books.",
   "main": "index.js",
   "scripts": {
-    "ci-all": "npm ci && cd frontend && npm ci",
+    "ci-all": "npm ci && cd frontend && npm ci && cd ../frontend-vue && npm ci",
     "prepare": "husky install",
     "start": "concurrently 'cd backend && ./gradlew bootRun' 'npm start --prefix frontend'",
     "test": "echo \"Error: no test specified\" && exit 1"

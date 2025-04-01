@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BookList from './components/BookList.vue'
+import BookManager from './components/BookList.vue'
 </script>
 
 <template>
@@ -8,6 +8,6 @@ import BookList from './components/BookList.vue'
   </header>
 
   <main>
-    <BookList />
+    <BookManager />
   </main>
 </template>

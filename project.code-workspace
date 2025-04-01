@@ -10,7 +10,11 @@
 		},
 		{
 			"path": "frontend",
-			"name": "Frontend"
+			"name": "Frontend React"
+		},
+		{
+			"path": "frontend-vue",
+			"name": "Frontend Vue"
 		}
 	],
 	"settings": {

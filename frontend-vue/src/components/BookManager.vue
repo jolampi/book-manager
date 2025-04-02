@@ -4,8 +4,9 @@ import { createBook, deleteBook, getBooks, updateBook } from '../services/backen
 import type { Book, NewBook } from '../services/backend.types'
 import BookPicker from './BookPicker.vue'
 import BookEditor from './BookEditor.vue'
+import { useQuery } from '@/composable/useQuery'
 
-const books = ref<Book[]>([])
+const { data: books, error, refresh } = useQuery(getBooks, [])
 const selected = ref<Book | null>(null)
 
 watchEffect(async () => {
@@ -14,31 +15,31 @@ watchEffect(async () => {
 
 async function handleCreate(newBook: NewBook) {
   await createBook(newBook)
-  books.value = await getBooks()
+  await refresh()
 }
 
 async function handleUpdate(book: Book) {
   await updateBook(book.id, book)
-  selected.value = null
-  books.value = await getBooks()
+  await refresh()
+  selected.value = books.value.find((x) => x.id === book.id) ?? null
 }
 
-async function handleDelete() {
-  if (!selected.value) {
-    return
-  }
-  await deleteBook(selected.value.id)
+async function handleDelete(id: number) {
+  await deleteBook(id)
+  await refresh()
   selected.value = null
-  books.value = await getBooks()
 }
 </script>
 
 <template>
-  <BookPicker :books v-model="selected" />
+  <BookPicker :books="books" v-model="selected" />
   <BookEditor
     :book="selected"
     @create="handleCreate"
     @update="handleUpdate"
     @delete="handleDelete"
   />
+  <div v-if="error">
+    {{ error }}
+  </div>
 </template>

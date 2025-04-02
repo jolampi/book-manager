@@ -10,7 +10,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   create: [NewBook]
   update: [Book]
-  delete: []
+  delete: [number]
 }>()
 const form: Form = {
   author: '',
@@ -34,18 +34,23 @@ function onCreate() {
 
 function onUpdate() {
   if (props.book) {
-    emit('update', {
-      id: props.book.id,
-      author: form.author,
-      description: form.description,
-      title: form.title,
-    })
+    const id = props.book.id
+    emit('update', { ...mapData(), id })
   }
 }
 
 function onDelete() {
   if (props.book) {
-    emit('delete')
+    const id = props.book.id
+    emit('delete', id)
+  }
+}
+
+function mapData(): NewBook {
+  return {
+    author: form.author,
+    description: form.description,
+    title: form.title,
   }
 }
 </script>

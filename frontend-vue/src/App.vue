@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BookManager from './components/BookList.vue'
+import BookManager from './components/BookManager.vue'
 </script>
 
 <template>

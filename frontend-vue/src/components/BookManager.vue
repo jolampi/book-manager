@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import { createBook, deleteBook, getBooks, updateBook } from '../services/backend'
 import type { Book, NewBook } from '@/services/backend.types'
+import BookPicker from './BookPicker.vue'
 
 const books = ref<Book[]>([])
-const selected = ref<number | null>(null)
-const selectedBook = computed<Book | null>(() => {
-  return books.value.find((x) => x.id === selected.value) ?? null
-})
+const selected = ref<Book | null>(null)
 
 const title = ref('')
 const author = ref('')
 const description = ref('')
-watch(selectedBook, (book) => {
+watch(selected, (book) => {
   title.value = book?.title ?? ''
   author.value = book?.author ?? ''
   description.value = book?.description ?? ''
@@ -42,7 +40,7 @@ const handleUpdate = async () => {
     author: author.value,
     description: description.value,
   }
-  await updateBook(selected.value, payload)
+  await updateBook(selected.value.id, payload)
   selected.value = null
   books.value = await getBooks()
 }
@@ -51,18 +49,14 @@ const handleDelete = async () => {
   if (!selected.value) {
     return
   }
-  await deleteBook(selected.value)
+  await deleteBook(selected.value.id)
   selected.value = null
   books.value = await getBooks()
 }
 </script>
 
 <template>
-  <select size="5" v-model="selected">
-    <option v-for="book in books" :key="book.id" :value="book.id">
-      {{ book.title }} ({{ book.author }})
-    </option>
-  </select>
+  <BookPicker :books="books" v-model="selected" />
 
   <div>
     <label for="title-input">Title</label>

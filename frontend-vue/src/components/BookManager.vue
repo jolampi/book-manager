@@ -27,7 +27,7 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
-  <BookPicker :books="books" v-model="selected" />
+  <BookPicker :books="books" empty-label="(New Book)" v-model="selected" />
   <BookEditor
     :book="selected"
     @create="handleCreate"

@@ -1,32 +1,27 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
-import { createBook, deleteBook, getBooks, updateBook } from '../services/backend'
+import { ref } from 'vue'
 import type { Book, NewBook } from '../services/backend.types'
 import BookPicker from './BookPicker.vue'
 import BookEditor from './BookEditor.vue'
-import { useQuery } from '@/composable/useQuery'
+import { useBooks } from '@/composable/useBooks'
 
-const { data: books, error, refresh } = useQuery(getBooks, [])
+const { books, create, update, remove } = useBooks()
 const selected = ref<Book | null>(null)
 
-watchEffect(async () => {
-  books.value = await getBooks()
-})
-
-async function handleCreate(newBook: NewBook) {
-  await createBook(newBook)
-  await refresh()
+async function handleCreate(book: NewBook) {
+  await create(book)
+  const created = books.value.find((x) => x.author === book.author && x.title === book.title)
+  selected.value = created ?? null
 }
 
 async function handleUpdate(book: Book) {
-  await updateBook(book.id, book)
-  await refresh()
-  selected.value = books.value.find((x) => x.id === book.id) ?? null
+  await update(book)
+  const updated = books.value.find((x) => x.id === book.id)
+  selected.value = updated ?? null
 }
 
 async function handleDelete(id: number) {
-  await deleteBook(id)
-  await refresh()
+  await remove(id)
   selected.value = null
 }
 </script>
@@ -39,7 +34,4 @@ async function handleDelete(id: number) {
     @update="handleUpdate"
     @delete="handleDelete"
   />
-  <div v-if="error">
-    {{ error }}
-  </div>
 </template>

@@ -1,0 +1,15 @@
+h1 {
+  margin: 0;
+}
+
+header {
+  text-align: center;
+}
+
+.layout {
+  border-radius: 25px;
+  background-color: whitesmoke;
+  margin: 80px auto;
+  max-width: 1000px;
+  padding: 40px 0 20px;
+}

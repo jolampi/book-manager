@@ -3,11 +3,13 @@ import BookManager from './components/BookManager.vue'
 </script>
 
 <template>
-  <header>
-    <h1>Book Manager</h1>
-  </header>
+  <div class="layout">
+    <header>
+      <h1>Book Manager</h1>
+    </header>
 
-  <main>
-    <BookManager />
-  </main>
+    <main>
+      <BookManager />
+    </main>
+  </div>
 </template>

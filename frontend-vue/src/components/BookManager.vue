@@ -27,11 +27,35 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
-  <BookPicker :books="books" empty-label="(New Book)" v-model="selected" />
-  <BookEditor
-    :book="selected"
-    @create="handleCreate"
-    @update="handleUpdate"
-    @delete="handleDelete"
-  />
+  <div class="container">
+    <div class="flex">
+      <BookEditor
+        :book="selected"
+        @create="handleCreate"
+        @update="handleUpdate"
+        @delete="handleDelete"
+      />
+    </div>
+    <div class="flex">
+      <BookPicker :books="books" empty-label="(New Book)" v-model="selected" />
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.container {
+  display: flex;
+  column-gap: 1.5rem;
+  flex-direction: column-reverse;
+  margin: 20px;
+  row-gap: 2rem;
+
+  @media screen and (min-width: 550px) {
+    flex-direction: row;
+  }
+}
+
+.flex {
+  flex: 1;
+}
+</style>

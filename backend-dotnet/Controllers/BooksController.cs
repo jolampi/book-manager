@@ -1,68 +1,45 @@
+using System.Threading.Tasks;
+using bookmanager.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace bookmanager.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BooksController(BooksContext booksContext) : ControllerBase
+public class BooksController(BooksService booksService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Post(Book book)
+    public async Task<ActionResult> Post(Book payload)
     {
-        var result = await booksContext.Books.AddAsync(book);
-        await booksContext.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetAll), new { id = book.Id }, book);
+        var book = await booksService.CreateAsync(payload);
+        return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Book>>> GetAll()
     {
-        return await booksContext.Books.ToListAsync();
+        var books = await booksService.GetAllAsync();
+        return Ok(books);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Book>> GetById(int id)
     {
-        var book = await booksContext.Books
-            .Where(book => book.Id == id)
-            .FirstAsync();
-        if (book is null)
-        {
-            return NotFound();
-        }
-        return book;
+        var book = await booksService.GetByIdAsync(id);
+        return Ok(book);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Book payload)
+    public async Task<ActionResult<Book>> Update(int id, Book payload)
     {
-        var book = await booksContext.Books
-            .Where(book => book.Id == id)
-            .FirstAsync();
-        if (book is null)
-        {
-            return NotFound();
-        }
-        book.Author = payload.Author;
-        book.Description = payload.Description;
-        book.Title = payload.Title;
-        await booksContext.SaveChangesAsync();
-        return NoContent();
+        var updated = await booksService.UpdateAsync(id, payload);
+        return Ok(updated);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var book = await booksContext.Books
-            .Where(book => book.Id == id)
-            .FirstAsync();
-        if (book is null)
-        {
-            return NotFound();
-        }
-        booksContext.Remove(book);
-        await booksContext.SaveChangesAsync();
+        await booksService.DeleteAsync(id);
         return NoContent();
     }
 }

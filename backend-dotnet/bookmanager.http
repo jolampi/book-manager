@@ -1,6 +1,32 @@
-@backend_dotnet_HostAddress = http://localhost:5240
+@bookmanager_HostAddress = http://localhost:5240
 
-GET {{backend_dotnet_HostAddress}}/weatherforecast/
+POST {{bookmanager_HostAddress}}/books
+Content-Type: application/json
+
+{
+  "author": "George RR Martin",
+  "title": "Song of Ice and Fire",
+  "description": "best seller"
+}
+
+###
+
+GET {{bookmanager_HostAddress}}/books
 Accept: application/json
+
+###
+
+PUT {{bookmanager_HostAddress}}/books/1
+Content-Type: application/json
+
+{
+  "author": "George RR Martin",
+  "title": "Song of Ice and Fire",
+  "description": "best seller, new book confirmed this year"
+}
+
+###
+
+DELETE {{bookmanager_HostAddress}}/books/1
 
 ###
